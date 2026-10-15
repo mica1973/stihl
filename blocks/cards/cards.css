@@ -121,7 +121,7 @@
 
 .cards-products .cards-card-accessories {
   position: absolute;
-  bottom: 12px;
+  top: 12px;
   left: 12px;
   display: flex;
   align-items: center;
