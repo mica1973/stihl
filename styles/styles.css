@@ -22,8 +22,8 @@
   --border-color: #dadada;
 
   /* fonts */
-  --body-font-family: arial, helvetica, sans-serif;
-  --heading-font-family: arial, helvetica, sans-serif;
+  --body-font-family: roboto, arial, helvetica, sans-serif;
+  --heading-font-family: roboto-condensed, roboto, arial, helvetica, sans-serif;
 
   /* body sizes */
   --body-font-size-m: 18px;
@@ -113,6 +113,11 @@ h6 {
   font-weight: 600;
   line-height: 1.25;
   scroll-margin: 40px;
+}
+
+h1,
+h2 {
+  text-transform: uppercase;
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }

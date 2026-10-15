@@ -8,12 +8,43 @@
   background: var(--background-color);
 }
 
+.header .nav-promo {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  background: var(--brand-color);
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.header .nav-promo::after {
+  margin-left: 12px;
+  content: '›';
+  font-size: 20px;
+  line-height: 1;
+}
+
+.header .nav-utility {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  background: var(--light-color);
+}
+
 .header nav {
   box-sizing: border-box;
   display: grid;
   grid-template:
-    'hamburger brand tools' var(--nav-height)
-    'sections sections sections' 1fr / 36px minmax(120px, 1fr) auto;
+    'hamburger brand' var(--nav-height)
+    'sections sections' 1fr / 36px minmax(0, 1fr);
   align-items: center;
   gap: 0 12px;
   width: 100%;
@@ -30,8 +61,8 @@
   inset: 0;
   z-index: 11;
   grid-template:
-    'hamburger brand tools' var(--nav-height)
-    'sections sections sections' 1fr / 36px minmax(120px, 1fr) auto;
+    'hamburger brand' var(--nav-height)
+    'sections sections' 1fr / 36px minmax(0, 1fr);
   align-content: start;
   overflow-y: auto;
   height: 100dvh;
@@ -145,16 +176,22 @@
   gap: 12px;
 }
 
+.header .nav-brand > .default-content-wrapper > p {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .header .nav-brand img {
   display: block;
-  width: 100px;
-  max-height: 48px;
+  width: 86px;
+  max-height: 44px;
   object-fit: contain;
 }
 
 .header .nav-brand img[alt*='100 Jahre'] {
-  width: 90px;
-  max-height: 52px;
+  width: 72px;
+  max-height: 46px;
 }
 
 /* Primary navigation and dropdowns */
@@ -231,16 +268,26 @@
 
 /* Utility links */
 .header .nav-tools {
-  grid-area: tools;
-  justify-self: end;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
   font-size: var(--body-font-size-xs);
 }
 
 .header .nav-tools .default-content-wrapper > p {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header .nav-utility-dealer,
+.header .nav-utility-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .header .nav-tools a:any-link {
@@ -248,17 +295,30 @@
   white-space: nowrap;
 }
 
-.header .nav-tools a:not(:first-child) {
-  display: none;
-}
-
 @media (width < 900px) {
-  .header .nav-tools .default-content-wrapper > p {
-    font-size: 0;
+  .header .nav-promo {
+    min-height: 34px;
+    font-size: 10px;
   }
 
-  .header .nav-tools .default-content-wrapper > p > a:first-child {
+  .header .nav-utility {
+    min-height: 34px;
+  }
+
+  .header .nav-tools {
     font-size: var(--body-font-size-xs);
+  }
+
+  .header .nav-tools .default-content-wrapper > p {
+    justify-content: flex-start;
+  }
+
+  .header .nav-utility-actions {
+    display: none;
+  }
+
+  .header nav {
+    padding: 0 16px;
   }
 }
 
@@ -356,16 +416,17 @@
   }
 
   .header .nav-tools {
-    flex: 0 0 auto;
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+
+  .header .nav-utility-actions {
+    gap: 14px;
     font-size: var(--body-font-size-xs);
   }
 
   .header .nav-tools .default-content-wrapper > p {
-    gap: 12px;
-  }
-
-  .header .nav-tools a:not(:first-child) {
-    display: inline;
+    gap: 24px;
   }
 }
 
@@ -378,7 +439,5 @@
     gap: 26px;
   }
 
-  .header .nav-tools .default-content-wrapper > p {
-    gap: 18px;
-  }
+  .header .nav-utility-actions { gap: 18px; }
 }

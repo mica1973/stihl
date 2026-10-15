@@ -31,3 +31,111 @@
     order: unset;
   }
 }
+
+/* The first image-and-copy pair on this migrated page is the STIHL home hero. */
+.hero-section > .columns-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.columns.columns-hero {
+  position: relative;
+  height: clamp(460px, 33.333vw, 640px);
+  overflow: hidden;
+}
+
+.columns.columns-hero > div {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+
+.columns.columns-hero > div > .columns-img-col {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.columns.columns-hero .columns-img-col picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.columns.columns-hero .columns-img-col img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.columns.columns-hero > div > div:not(.columns-img-col) {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+  z-index: 1;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  width: min(465px, calc(100% - 40px));
+  height: calc(100% - 16px);
+  padding: 32px;
+  background: #fff;
+}
+
+.columns.columns-hero h2 {
+  margin: 0 0 18px;
+  font-family: var(--heading-font-family);
+  font-size: clamp(25px, 2.35vw, 32px);
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.columns.columns-hero h2::after {
+  display: block;
+  width: 48px;
+  height: 6px;
+  margin-top: 16px;
+  background: var(--dark-color);
+  content: '';
+}
+
+.columns.columns-hero p {
+  font-size: var(--body-font-size-s);
+  line-height: 1.55;
+}
+
+@media (width < 700px) {
+  .columns.columns-hero {
+    height: auto;
+    overflow: visible;
+  }
+
+  .columns.columns-hero > div {
+    height: auto;
+  }
+
+  .columns.columns-hero > div > .columns-img-col {
+    position: relative;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .columns.columns-hero .columns-img-col img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .columns.columns-hero > div > div:not(.columns-img-col) {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    height: auto;
+    margin: -8px 16px 0;
+    padding: 22px;
+  }
+}

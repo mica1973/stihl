@@ -25,3 +25,274 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+/* The source homepage presents its product categories as a horizontal picker. */
+.cards-categories > ul {
+  display: flex;
+  overflow-x: auto;
+  gap: 14px;
+  padding: 0 0 12px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}
+
+.cards-categories > ul > li {
+  flex: 0 0 170px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+.cards-categories .cards-card-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 108px;
+  padding: 8px;
+  background: #fff;
+}
+
+.cards-categories .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.cards-categories .cards-card-body {
+  margin: 0;
+  padding: 8px 10px 12px;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  text-align: center;
+}
+
+.cards-categories .cards-card-body p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cards-categories .cards-card-body a:any-link {
+  color: var(--text-color);
+}
+
+/* Product cards are a horizontal carousel, not a grid of image-led content cards. */
+.cards-products > ul {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 0 0 14px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}
+
+.cards-products > ul > li {
+  position: relative;
+  display: flex;
+  flex: 0 0 clamp(248px, 25vw, 290px);
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+
+.cards-products .cards-card-image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 220px;
+  padding: 20px 20px 28px;
+  background: #fff;
+}
+
+.cards-products .cards-card-image > picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cards-products .cards-card-accessories {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+}
+
+.cards-products .cards-card-accessories picture {
+  display: block;
+  width: 64px;
+  height: 30px;
+  padding: 2px;
+  background: #fff;
+}
+
+.cards-products .cards-card-accessories img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.cards-products .cards-card-image > picture img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.cards-products .cards-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 0;
+  padding: 14px 16px 18px;
+  font-size: var(--body-font-size-xs);
+}
+
+.cards-products .cards-product-badge {
+  align-self: flex-start;
+  margin: 0 0 8px;
+  padding: 4px 8px;
+  background: var(--brand-color);
+  color: var(--dark-color);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cards-products .cards-card-body h3 {
+  margin: 0 0 10px;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-s);
+  line-height: 1.25;
+}
+
+.cards-products .cards-card-body p {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.cards-products .cards-card-body p:has(strong) {
+  font-size: var(--body-font-size-s);
+}
+
+.cards-products .cards-card-body > p:last-child {
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.cards-products .cards-card-body > p:last-child a {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  margin-top: 3px;
+  padding: 10px 38px 10px 12px;
+  background: var(--light-color);
+  color: var(--text-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cards-products .cards-card-body > p:last-child a::after {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  content: '›';
+  font-size: 22px;
+  line-height: 1;
+  transform: translateY(-55%);
+}
+
+.cards-products .cards-card-body > p:last-child a:hover,
+.cards-products .cards-card-body > p:last-child a:focus-visible {
+  background: #e2e2e2;
+  color: var(--text-color);
+  text-decoration: underline;
+  text-decoration-color: var(--brand-color);
+  text-underline-offset: 3px;
+}
+
+.cards-products .cards-carousel-controls,
+.cards-categories .cards-carousel-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.cards-products .cards-carousel-controls[hidden],
+.cards-categories .cards-carousel-controls[hidden] {
+  display: none;
+}
+
+.cards-products .cards-carousel-controls button,
+.cards-categories .cards-carousel-controls button {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--dark-color);
+  border-radius: 50%;
+  padding: 0;
+  background: var(--background-color);
+  color: var(--dark-color);
+  cursor: pointer;
+}
+
+.cards-products .cards-carousel-controls button span,
+.cards-categories .cards-carousel-controls button span {
+  margin-top: -3px;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.cards-products .cards-carousel-controls button {
+  border-color: var(--brand-color);
+  background: var(--brand-color);
+  color: var(--dark-color);
+}
+
+.cards-products .cards-carousel-controls button:disabled,
+.cards-categories .cards-carousel-controls button:disabled {
+  border-color: var(--border-color);
+  color: #999;
+  cursor: default;
+}
+
+.cards-products .cards-carousel-controls button:disabled {
+  opacity: 0.45;
+}
+
+.cards-products .cards-carousel-controls button:focus-visible,
+.cards-categories .cards-carousel-controls button:focus-visible,
+.cards-products .cards-carousel-controls button:hover:not(:disabled),
+.cards-categories .cards-carousel-controls button:hover:not(:disabled) {
+  border-color: var(--brand-color);
+  background: var(--brand-color);
+}
+
+@media (width < 700px) {
+  .cards-products > ul > li {
+    flex-basis: min(78vw, 300px);
+  }
+
+  .cards-products .cards-carousel-controls button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cards-categories > ul > li {
+    flex-basis: 155px;
+  }
+}

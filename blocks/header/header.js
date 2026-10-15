@@ -72,7 +72,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   if (isDesktop.matches) nav.removeAttribute('aria-expanded');
   else nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  button.setAttribute('aria-label', expanded ? 'Navigation öffnen' : 'Navigation schließen');
 
   // enable menu collapse on escape keypress
   if (!expanded || isDesktop.matches) {
@@ -108,6 +108,40 @@ export default async function decorate(block) {
     if (section) section.classList.add(`nav-${c}`);
   });
 
+  const navTools = nav.querySelector('.nav-tools');
+  const utility = document.createElement('div');
+  utility.className = 'nav-utility';
+  if (navTools) {
+    navTools.remove();
+    const toolsParagraph = navTools.querySelector('.default-content-wrapper > p');
+    const [dealerLink, ...actionLinks] = [...(toolsParagraph?.querySelectorAll(':scope > a') || [])];
+    if (toolsParagraph && dealerLink) {
+      const dealer = document.createElement('span');
+      dealer.className = 'nav-utility-dealer';
+      dealer.append(dealerLink);
+      const actions = document.createElement('span');
+      actions.className = 'nav-utility-actions';
+      actionLinks.forEach((link, index) => {
+        if (index) actions.append(document.createTextNode(' | '));
+        actions.append(link);
+      });
+      [
+        ['Wunschliste', 'https://www.stihl.de/de/merkliste'],
+        ['Warenkorb', 'https://www.stihl.de/de/warenkorb'],
+        ['Produktsuche', 'https://www.stihl.de/de/suche'],
+      ].forEach(([text, href]) => {
+        actions.append(document.createTextNode(' | '));
+        const link = document.createElement('a');
+        // Other destination pages are intentionally not imported into this one-page EDS site.
+        link.href = new URL(href, 'https://www.stihl.de').href;
+        link.textContent = text;
+        actions.append(link);
+      });
+      toolsParagraph.replaceChildren(dealer, actions);
+    }
+    utility.append(navTools);
+  }
+
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
   if (brandLink) {
@@ -115,8 +149,75 @@ export default async function decorate(block) {
     brandLink.closest('.button-container').className = '';
   }
 
+  // A migrated nav fragment may contain only the STIHL name as text. Restore the
+  // visual wordmark and anniversary mark without making authors maintain raw SVG markup.
+  const logoLink = navBrand.querySelector('a');
+  if (logoLink && !logoLink.querySelector('img')) {
+    logoLink.replaceChildren();
+    logoLink.setAttribute('aria-label', 'STIHL Startseite');
+    const logo = document.createElement('img');
+    logo.src = 'https://www.stihl.de/content/experience-fragments/stihl/de/de/main_navigation/master_msm_moved/_jcr_content/root/mainnav/logo.coreimg.svg/1643645266502/stihl-logo.svg';
+    logo.alt = 'STIHL';
+    logoLink.append(logo);
+
+    const anniversaryLink = document.createElement('a');
+    anniversaryLink.href = 'https://www.stihl.de/de/campaign/one-time-campaigns/100-jahre-stihl';
+    anniversaryLink.setAttribute('aria-label', '100 Jahre STIHL');
+    const anniversary = document.createElement('img');
+    anniversary.src = 'https://www.stihl.de/content/experience-fragments/stihl/de/de/main_navigation/master_msm_moved/_jcr_content/root/mainnav/logo-new.coreimg.svg/1768401828403/stihl-100-years-logo-rgb-navi-orange-de.svg';
+    anniversary.alt = '100 Jahre STIHL';
+    anniversaryLink.append(anniversary);
+    logoLink.parentElement.append(anniversaryLink);
+  }
+
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
+    const menuList = navSections.querySelector(':scope .default-content-wrapper > ul');
+    const missingSections = [
+      {
+        title: 'Zubehör',
+        links: [
+          ['Zubehör für Kettensägen', '/de/ac/kettensaegen-zubehoer-motorsaegenzubehoer-98285'],
+          ['Akkus und Ladegeräte', '/de/ac/akku-geraete-zubehoer-99386'],
+          ['Betriebsstoffe', '/de/ac/betriebsstoffe-98280'],
+          ['Persönliche Schutzausrüstung', '/de/ac/persoenliche-schutzausruestung-98284'],
+          ['Übersicht Produktzubehör', '/de/products/produktzubehoer'],
+        ],
+      },
+      {
+        title: 'Profis',
+        links: [
+          ['Alle Profi-Produkte', '/de/professional/alle-profi-produkte'],
+          ['Online Produktberater', '/de/produktberater'],
+          ['Services für Firmenkunden', '/de/professional/serviceleistungen'],
+          ['ALLPRO-System', '/de/technologie/akku-technologie/allpro-system'],
+          ['Alle Profi-Themen', '/de/professional'],
+        ],
+      },
+    ];
+    missingSections.forEach(({ title, links }) => {
+      const exists = [...(menuList?.querySelectorAll(':scope > li') || [])]
+        .some((item) => item.textContent.trim().startsWith(title));
+      if (exists || !menuList) return;
+      const item = document.createElement('li');
+      const label = document.createElement('p');
+      label.textContent = title;
+      const subList = document.createElement('ul');
+      links.forEach(([text, href]) => {
+        const entry = document.createElement('li');
+        const paragraph = document.createElement('p');
+        const link = document.createElement('a');
+        // Keep non-homepage destinations on the source site; they are not imported here.
+        link.href = new URL(href, 'https://www.stihl.de').href;
+        link.textContent = text;
+        paragraph.append(link);
+        entry.append(paragraph);
+        subList.append(entry);
+      });
+      item.append(label, subList);
+      menuList.append(item);
+    });
+
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       const subList = navSection.querySelector(':scope > ul');
       if (!subList) return;
@@ -155,6 +256,11 @@ export default async function decorate(block) {
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
-  navWrapper.append(nav);
+  const promotion = document.createElement('a');
+  promotion.className = 'nav-promo';
+  promotion.href = 'https://www.stihl.de/de/gratis-akku';
+  promotion.textContent = 'JETZT SET AUS DEM AS-SYSTEM KAUFEN UND GRATIS AS 2 AKKUS SICHERN!';
+  promotion.setAttribute('aria-label', promotion.textContent);
+  navWrapper.append(promotion, utility, nav);
   block.append(navWrapper);
 }
