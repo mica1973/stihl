@@ -35,11 +35,36 @@ export default function decorate(block) {
     ul.setAttribute('aria-label', label);
     ul.setAttribute('aria-roledescription', productCards ? 'Produktkarussell' : 'Kategorienkarussell');
 
+    const section = block.closest('.section');
+    const intro = section?.querySelector(':scope > .default-content-wrapper');
     if (productCards) {
+      // The source site leads this carousel with a Neuheiten tile. Reuse the
+      // imported link rather than synthesizing a destination or importing pages.
+      const introParagraph = intro?.querySelector(':scope > p');
+      const noveltyLink = [...(introParagraph?.querySelectorAll(':scope > a') || [])]
+        .find((link) => link.textContent.trim().toLowerCase() === 'neuheiten');
+      const allProductsLink = [...(introParagraph?.querySelectorAll(':scope > a') || [])]
+        .find((link) => link.textContent.trim().toLowerCase() === 'alle produkte');
+      if (noveltyLink) {
+        const teaser = document.createElement('li');
+        teaser.className = 'cards-product-teaser';
+        teaser.setAttribute('aria-label', 'Neuheiten');
+        const badge = document.createElement('span');
+        badge.className = 'cards-product-teaser-badge';
+        badge.textContent = 'NEU';
+        teaser.append(badge, noveltyLink);
+        ul.prepend(teaser);
+        if (allProductsLink) introParagraph.replaceChildren(allProductsLink);
+        else introParagraph.remove();
+        intro?.classList.add('cards-products-header');
+        section?.classList.add('cards-products-section');
+      }
+
       // Product imports can include a small image for a battery or other item in the set.
       // Keep it with its product, but don't let it render like a second full-size card image.
       ul.querySelectorAll(':scope > li').forEach((card) => {
         const body = card.querySelector('.cards-card-body');
+        if (!body) return;
         const title = body.querySelector('h3');
         const badgeMatch = title?.textContent.match(/^(Neu|Angebot):\s*/i);
         if (badgeMatch) {
@@ -62,6 +87,29 @@ export default function decorate(block) {
           paragraph.remove();
         });
         card.querySelector('.cards-card-image')?.append(accessories);
+      });
+    } else if (categoryCards) {
+      // The separate "Alle Produkte" link belongs to the category picker as its first tile.
+      const linkParagraph = intro?.querySelector(':scope > p');
+      const allProductsLink = [...(linkParagraph?.querySelectorAll(':scope > a') || [])]
+        .find((link) => link.textContent.trim().toLowerCase() === 'alle produkte');
+      const otherContent = [...(intro?.children || [])].filter((child) => child !== linkParagraph);
+      if (allProductsLink && otherContent.length === 0) {
+        const tile = document.createElement('li');
+        tile.className = 'cards-category-all';
+        const body = document.createElement('div');
+        body.className = 'cards-card-body';
+        const paragraph = document.createElement('p');
+        paragraph.append(allProductsLink);
+        body.append(paragraph);
+        tile.append(body);
+        ul.prepend(tile);
+        intro.remove();
+      }
+
+      ul.querySelectorAll(':scope > li:not(.cards-category-all)').forEach((card) => {
+        const body = card.querySelector('.cards-card-body');
+        if (body) card.prepend(body);
       });
     }
 

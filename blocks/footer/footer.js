@@ -1,6 +1,15 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
+const socialIconAssets = {
+  'youtube.com': 'youtube.svg',
+  'instagram.com': 'instagram.svg',
+  'facebook.com': 'facebook.svg',
+  pinterest: 'pinterest.svg',
+  'linkedin.com': 'linkedin.svg',
+  'xing.com': 'xing.svg',
+};
+
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
@@ -28,6 +37,7 @@ export default async function decorate(block) {
         if (heading.includes('newsletter')) group.classList.add('footer-newsletter');
         else if (heading.includes('vorteile')) group.classList.add('footer-benefits');
         else if (heading.includes('zahlung')) group.classList.add('footer-payments');
+        else if (heading.includes('social')) group.classList.add('footer-social');
         else if (heading.includes('recht')) group.classList.add('footer-legal');
         child.replaceWith(group);
         group.append(child);
@@ -38,11 +48,39 @@ export default async function decorate(block) {
     [...fragment.querySelectorAll('.default-content-wrapper p')].forEach((paragraph, index) => {
       const column = document.createElement('div');
       column.className = 'footer-column';
+      if (groupNames[index] === 'Social Media') column.classList.add('footer-social');
       const heading = document.createElement('h2');
       heading.textContent = groupNames[index] || 'Weitere Links';
       paragraph.replaceWith(column);
       column.append(heading, paragraph);
     });
+  }
+
+  const newsletter = fragment.querySelector('.footer-newsletter');
+  const social = fragment.querySelector('.footer-social');
+  if (newsletter && social) {
+    newsletter.querySelectorAll('p').forEach((paragraph) => {
+      if (paragraph.querySelector('a')) paragraph.classList.add('footer-newsletter-cta');
+    });
+    const links = [...social.querySelectorAll('a')];
+    const list = document.createElement('ul');
+    list.className = 'footer-social-links';
+    links.forEach((link) => {
+      const label = link.textContent.trim();
+      const asset = Object.entries(socialIconAssets)
+        .find(([host]) => link.href.includes(host))?.[1];
+      if (!asset) return;
+      link.setAttribute('aria-label', label);
+      const icon = document.createElement('img');
+      icon.src = `https://www.stihl.de/content/dam/stihl/system-assets/icons/${asset}`;
+      icon.alt = '';
+      link.replaceChildren(icon);
+      const item = document.createElement('li');
+      item.append(link);
+      list.append(item);
+    });
+    social.replaceChildren(list);
+    newsletter.append(social);
   }
 
   // decorate footer DOM

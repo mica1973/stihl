@@ -3,6 +3,48 @@ import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
+const svgNamespace = 'http://www.w3.org/2000/svg';
+
+const utilityIcons = {
+  location: [['path', { d: 'M12 21s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12Z' }], ['circle', { cx: '12', cy: '9', r: '2.3' }]],
+  heart: [['path', { d: 'M20.8 4.6a5 5 0 0 0-7.1 0L12 6.3l-1.7-1.7a5 5 0 0 0-7.1 7.1L12 20l8.8-8.3a5 5 0 0 0 0-7.1Z' }]],
+  contact: [
+    ['rect', {
+      x: '3', y: '5', width: '18', height: '14', rx: '1',
+    }],
+    ['path', { d: 'm4 7 8 6 8-6' }],
+  ],
+  cart: [['path', { d: 'M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 1.9-1.4L21 8H6' }], ['circle', { cx: '10', cy: '19', r: '1' }], ['circle', { cx: '18', cy: '19', r: '1' }]],
+  account: [['circle', { cx: '12', cy: '8', r: '3.3' }], ['path', { d: 'M4.5 21c0-4.1 3-7 7.5-7s7.5 2.9 7.5 7' }]],
+  search: [['circle', { cx: '10.5', cy: '10.5', r: '6.5' }], ['path', { d: 'm15.5 15.5 5 5' }]],
+};
+
+function decorateUtilityLink(link, iconName, showLabel = false) {
+  const label = link.textContent.trim();
+  link.classList.add('nav-utility-link');
+  link.setAttribute('aria-label', label);
+  link.title = label;
+
+  const icon = document.createElementNS(svgNamespace, 'svg');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.setAttribute('focusable', 'false');
+  utilityIcons[iconName].forEach(([tag, attributes]) => {
+    const shape = document.createElementNS(svgNamespace, tag);
+    Object.entries(attributes).forEach(([attribute, value]) => (
+      shape.setAttribute(attribute, value)
+    ));
+    icon.append(shape);
+  });
+  link.replaceChildren(icon);
+
+  if (showLabel) {
+    const text = document.createElement('span');
+    text.className = 'nav-utility-label';
+    text.textContent = label;
+    link.append(text);
+  }
+}
 
 /**
  * Closes the open nav dropdown (desktop) or the nav menu (mobile) on Escape
@@ -118,24 +160,31 @@ export default async function decorate(block) {
     if (toolsParagraph && dealerLink) {
       const dealer = document.createElement('span');
       dealer.className = 'nav-utility-dealer';
+      decorateUtilityLink(dealerLink, 'location', true);
       dealer.append(dealerLink);
       const actions = document.createElement('span');
       actions.className = 'nav-utility-actions';
-      actionLinks.forEach((link, index) => {
-        if (index) actions.append(document.createTextNode(' | '));
-        actions.append(link);
+      const actionsByIcon = {};
+      actionLinks.forEach((link) => {
+        const label = link.textContent.trim().toLowerCase();
+        const iconName = label.includes('kontakt') ? 'contact' : 'account';
+        decorateUtilityLink(link, iconName);
+        actionsByIcon[iconName] = link;
       });
       [
-        ['Wunschliste', 'https://www.stihl.de/de/merkliste'],
-        ['Warenkorb', 'https://www.stihl.de/de/warenkorb'],
-        ['Produktsuche', 'https://www.stihl.de/de/suche'],
-      ].forEach(([text, href]) => {
-        actions.append(document.createTextNode(' | '));
+        ['Wunschliste', 'https://www.stihl.de/de/merkliste', 'heart'],
+        ['Warenkorb', 'https://www.stihl.de/de/warenkorb', 'cart'],
+        ['Produktsuche', 'https://www.stihl.de/de/suche', 'search'],
+      ].forEach(([text, href, iconName]) => {
         const link = document.createElement('a');
         // Other destination pages are intentionally not imported into this one-page EDS site.
         link.href = new URL(href, 'https://www.stihl.de').href;
         link.textContent = text;
-        actions.append(link);
+        decorateUtilityLink(link, iconName);
+        actionsByIcon[iconName] = link;
+      });
+      ['heart', 'contact', 'cart', 'account', 'search'].forEach((iconName) => {
+        if (actionsByIcon[iconName]) actions.append(actionsByIcon[iconName]);
       });
       toolsParagraph.replaceChildren(dealer, actions);
     }

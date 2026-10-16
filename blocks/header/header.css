@@ -4,7 +4,6 @@
   z-index: 10;
   top: 0;
   width: 100%;
-  border-bottom: 1px solid var(--border-color);
   background: var(--background-color);
 }
 
@@ -13,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: 46px;
   padding: 8px 16px;
   background: var(--brand-color);
   color: var(--dark-color);
@@ -35,7 +34,7 @@
 .header .nav-utility {
   display: flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 46px;
   background: var(--light-color);
 }
 
@@ -43,12 +42,12 @@
   box-sizing: border-box;
   display: grid;
   grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr / 36px minmax(0, 1fr);
+    'brand hamburger' var(--nav-height)
+    'sections sections' 1fr / minmax(0, 1fr) 36px;
   align-items: center;
   gap: 0 12px;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1024px;
   min-height: var(--nav-height);
   margin: auto;
   padding: 0 20px;
@@ -61,8 +60,8 @@
   inset: 0;
   z-index: 11;
   grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr / 36px minmax(0, 1fr);
+    'brand hamburger' var(--nav-height)
+    'sections sections' 1fr / minmax(0, 1fr) 36px;
   align-content: start;
   overflow-y: auto;
   height: 100dvh;
@@ -162,7 +161,7 @@
   grid-area: brand;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
   min-width: 0;
   font-size: var(--heading-font-size-s);
   font-weight: 700;
@@ -173,25 +172,25 @@
 .header .nav-brand > p {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
 }
 
 .header .nav-brand > .default-content-wrapper > p {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0;
 }
 
 .header .nav-brand img {
   display: block;
-  width: 86px;
-  max-height: 44px;
+  width: 151px;
+  height: 66px;
   object-fit: contain;
 }
 
 .header .nav-brand img[alt*='100 Jahre'] {
-  width: 72px;
-  max-height: 46px;
+  width: 100px;
+  height: 66px;
 }
 
 /* Primary navigation and dropdowns */
@@ -270,7 +269,7 @@
 .header .nav-tools {
   box-sizing: border-box;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 0 20px;
   font-size: var(--body-font-size-xs);
@@ -281,6 +280,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .header .nav-utility-dealer,
@@ -290,6 +291,31 @@
   gap: 12px;
 }
 
+.header .nav-utility-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+}
+
+.header .nav-utility-link svg {
+  display: block;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7px;
+}
+
+.header .nav-utility-actions .nav-utility-link {
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
 .header .nav-tools a:any-link {
   font-weight: 600;
   white-space: nowrap;
@@ -297,12 +323,12 @@
 
 @media (width < 900px) {
   .header .nav-promo {
-    min-height: 34px;
-    font-size: 10px;
+    min-height: 46px;
+    font-size: 12px;
   }
 
   .header .nav-utility {
-    min-height: 34px;
+    min-height: 41px;
   }
 
   .header .nav-tools {
@@ -310,33 +336,76 @@
   }
 
   .header .nav-tools .default-content-wrapper > p {
-    justify-content: flex-start;
+    justify-content: space-between;
+    gap: 0;
   }
 
   .header .nav-utility-actions {
-    display: none;
+    flex: 1;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .header .nav-utility-dealer .nav-utility-link {
+    width: 40px;
+    overflow: hidden;
+  }
+
+  .header .nav-utility-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .header nav {
-    padding: 0 16px;
+    min-height: 46px;
+    grid-template:
+      'brand hamburger' 46px
+      'sections sections' 1fr / minmax(0, 1fr) 36px;
+    padding: 0;
+  }
+
+  .header nav[aria-expanded='true'] {
+    grid-template:
+      'brand hamburger' 46px
+      'sections sections' 1fr / minmax(0, 1fr) 36px;
+  }
+
+  .header .nav-brand img {
+    width: 105px;
+    height: 46px;
+  }
+
+  .header .nav-brand img[alt*='100 Jahre'] {
+    width: 50px;
+    height: 46px;
+  }
+
+  .header nav .nav-hamburger {
+    justify-content: flex-end;
+    margin-right: 16px;
   }
 }
 
 @media (width >= 900px) {
   .header nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 20px;
-    min-height: 84px;
-    padding: 0 32px;
+    min-height: 66px;
+    height: 66px;
+    padding: 0 20px;
   }
 
   .header nav[aria-expanded='true'] {
     position: relative;
     inset: auto;
     display: flex;
-    height: auto;
-    min-height: 84px;
+    min-height: 66px;
+    height: 66px;
     overflow: visible;
   }
 
@@ -346,10 +415,11 @@
   }
 
   .header .nav-brand {
-    flex: 0 0 205px;
+    flex: 0 0 251px;
   }
 
   .header .nav-sections {
+    flex: 1;
     display: block;
     visibility: visible;
     padding: 0;
@@ -360,15 +430,15 @@
   }
 
   .header .nav-sections ul {
-    font-size: var(--body-font-size-xs);
+    font-size: 16px;
   }
 
   .header .nav-sections .default-content-wrapper > ul {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 1.8vw, 28px);
-    height: 84px;
+    justify-content: space-between;
+    gap: 16px;
+    height: 66px;
   }
 
   .header .nav-sections .default-content-wrapper > ul > li {
@@ -383,14 +453,16 @@
   }
 
   .header .nav-sections .nav-drop > button::after {
-    top: 1.1em;
-    right: 2px;
-    width: 6px;
-    height: 6px;
-  }
-
-  .header .nav-sections .nav-drop > button[aria-expanded='true']::after {
-    top: 1.35em;
+    top: 50%;
+    right: 0;
+    width: auto;
+    height: auto;
+    border: 0;
+    content: '+';
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    transform: translateY(-50%);
   }
 
   .header .nav-sections .nav-drop > button + ul,
@@ -416,12 +488,12 @@
   }
 
   .header .nav-tools {
-    padding-right: 32px;
-    padding-left: 32px;
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
   .header .nav-utility-actions {
-    gap: 14px;
+    gap: 12px;
     font-size: var(--body-font-size-xs);
   }
 
@@ -431,12 +503,8 @@
 }
 
 @media (width >= 1200px) {
-  .header .nav-brand {
-    flex-basis: 225px;
-  }
-
   .header .nav-sections .default-content-wrapper > ul {
-    gap: 26px;
+    gap: 20px;
   }
 
   .header .nav-utility-actions { gap: 18px; }
